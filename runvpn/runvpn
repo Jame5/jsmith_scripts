@@ -1,0 +1,52 @@
+#!/bin/bash
+
+#########################
+# Added functionality to automatically start/restart
+# the VPNs without having to manually interfer.
+# 
+# ==============
+# PREREQUISITES:
+# ==============
+# - Python
+# - The authtoken script
+# - Your OAUTH secret for the authtoken script
+# - The LDAPPASSWORD variable below set to the base64 encoded value of your current LDAP password
+# - The case statement below edited for your personal preference for vpn names
+#   Normally they only have auth-user-pass.  Adding the login.conf part makes this work.
+#
+#########################
+WORKINGDIR=$HOME/runvpn
+BASEFILE=$WORKINGDIR/username
+CONFFILE=$WORKINGDIR/login.conf
+LDAPPASSWORD=`echo USERLDAPPASSWORDHERE | base64 -d`
+MULTIPLE=0
+
+uptime
+sudo service openvpn status
+
+case "$1" in
+example1)
+  VPN="example1"
+  ;;
+example2)
+  VPN="example2"
+  ;;
+*)
+  VPN="example1 example2" && MULTIPLE=1
+  ;;
+esac
+
+for region in $VPN
+do
+AUTHTOKEN=`$WORKINGDIR/authtoken`
+  sed "a\
+${LDAPPASSWORD}${AUTHTOKEN}" $BASEFILE > $CONFFILE 
+#  sudo ln -sf $CONFFILE $SYMLINK
+  sudo service openvpn restart $region
+  rm $CONFFILE
+#  sudo rm $SYMLINK
+  if [ $MULTIPLE -eq 1 ]; then
+    echo "Waiting 30 seconds for next token to be generated" && sleep 30  && MULTIPLE=0
+  fi
+done
+sudo service openvpn status

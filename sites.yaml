@@ -1,0 +1,13 @@
+site1:
+  id: <AMAZON_ACCESS_KEY>
+  key: <AMAOZON_SECRET_KEY>
+  email:
+         - '<emailaddressarray>'
+         - '<emailaddressarray>'
+
+site2:
+  id: <AMAZON_ACCESS_KEY>
+  key: <AMAOZON_SECRET_KEY>
+  email:
+         - '<emailaddressarray>'
+         - '<emailaddressarray>'
