@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script to download NCOA files
+# Script to download USPS files
 # -JSmith 2015-09-30
 
 ############################# 
@@ -42,8 +42,8 @@ FILEDOWNLOADURL=$USPSBASEURL/download/file
 LOGOUTURL=$USPSBASEURL/epf/logout
 
 #FILE Management
-NCOAPRODUCTCODE= # Example: NCAW
-NCOAPRODUCTID=   # Example: NCL18H
+PRODUCTCODE= # Example: NCAW
+PRODUCTID=   # Example: NCL18H
 OUTPUT=/tmp/outputfile
 HEADERFILE=/tmp/headerfile
 TEMPFILENAME=tempfile_output.tar
@@ -57,7 +57,7 @@ logonkey=""
 
 #### SUBROUTINES #####
 usps_login(){
-  echo -e "\n-----------------------\nLogging into the NCOA Web services".
+  echo -e "\n-----------------------\nLogging into the USPS Web services".
   curl -s ${CONTENTHEADER} \
   -D $HEADERFILE \
   -X POST \
@@ -76,7 +76,7 @@ get_filelist(){
   curl -s ${CONTENTHEADER} \
   -D $HEADERFILE \
   -X POST \
-  -d "obj={\"tokenkey\":\"$1\",\"logonkey\":\"$2\",\"productcode\":\"$NCOAPRODUCTCODE\",\"productid\":\"$NCOAPRODUCTID\",\"status\":\"SNX\"}" \
+  -d "obj={\"tokenkey\":\"$1\",\"logonkey\":\"$2\",\"productcode\":\"$PRODUCTCODE\",\"productid\":\"$PRODUCTID\",\"status\":\"SNX\"}" \
   $LISTURL > $OUTPUT \
   && echo -e "Done."
 }
@@ -173,14 +173,6 @@ statusupdate $tokenkey $logonkey C $FILEID
 tokenkey_refresh $HEADERFILE
 echo -e "Done.\n-----------------------"
 
-
-# STEP 7: Rename it to the correct release number by extracting it from the tarball.
-echo -e "\n-----------------------\nRenaming file...\n"
-NCOA_REL_NUM=`tar -xOf $TEMPFILENAME clk18/dvdhdr01.dat | grep "Release Number" | awk '{print $3}'`
-echo -e "\nRelease number is $NCOA_REL_NUM. Renaming temp file now."
-mv -v $TEMPFILENAME ncoa-${NCOA_REL_NUM}.tar || { echo -e "\nUnable to move file to correct name!\n"; usps_logout $tokenkey $logonkey; cleanup;  exit 1; }
-echo -e "Done.\n-----------------------"
-
-# Step 8: Logout and clean up temp files.
+# Step 7: Logout and clean up temp files.
 usps_logout $tokenkey $logonkey
 cleanup
