@@ -28,8 +28,8 @@ import string         # Easier message body formatting
 
 
 ## VARIABLES ##
-TCP_IP = '127.0.0.1'                   # localhost only please
-TCP_PORT = 8444                        # Pick an unused port, this just happened to be the example
+TCP_IP = '127.0.0.1'                     # localhost only please
+TCP_PORT = 8444                          # Pick an unused port, this just happened to be the example
 toaddress = 'helpdesk@yourRTserver.com'  # Modify as needed
 
 # REGEX MATCH
