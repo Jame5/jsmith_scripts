@@ -61,8 +61,8 @@ class HTTPServer(BaseHTTPServer.BaseHTTPRequestHandler):
         commiticareabout = json_data['after']
         for each in json_data['commits']:
           if commiticareabout == each['id']:  #Again, only want to deal with the most recent commit.
-            rawmessage = each['message']
-            if re.search(ticketstring,rawmessage):
+            commitmessage = each['message']
+            if re.search(ticketstring,commitmessage):
               #Setting some variables that are used for email.
               fromaddress = each['author']['email']
               commitid = each['id']
@@ -71,12 +71,12 @@ class HTTPServer(BaseHTTPServer.BaseHTTPRequestHandler):
               MSGBODY= string.join(( 
                 "From: %s" % fromaddress,
                 "To: %s" % toaddress,
-                "Subject: %s" % rawmessage ,
+                "Subject: %s" % commitmessage ,
                 "",
                 " Git Commit by: %s" % commituser,
                 "     Commit ID: %s" % commitid,
                 "    Commit URL: %s" % commiturl,
-                "Commit Message: %s" % rawmessage,
+                "Commit Message: %s" % commitmessage,
                 ), "\r\n")
               ## EMAIL SECTION ##
               # Slightly modified email send example from python docs
